@@ -16,15 +16,13 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ListAdapter;
 
-import com.hf.pagerlistview.R;
-
 import java.security.InvalidParameterException;
 
 /**
  * Pager Grid Fragment
  * Created by Fan on 2016/2/24.
  */
-public class PagerGridFragment extends Fragment {
+public class PagedGridFragment extends Fragment {
     private static final int DEFAULT_MAX_COLUMN = 4;
     private static final int DEFAULT_MAX_ROW = 2;
 
@@ -46,7 +44,7 @@ public class PagerGridFragment extends Fragment {
         }
     };
 
-    public PagerGridFragment() {
+    public PagedGridFragment() {
         super();
 
         initObjectId();
@@ -134,7 +132,7 @@ public class PagerGridFragment extends Fragment {
             mGridView = new GridView(getContext());
             mGridView.setNumColumns(maxColumn);
             mGridView.setAdapter(new SubListAdapter(
-                    PagerGridFragment.getAdapter(getArgParentId()),
+                    PagedGridFragment.getAdapter(getArgParentId()),
                     position * maxItemCount,
                     maxItemCount));
 

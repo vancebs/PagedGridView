@@ -9,7 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
-import com.hf.fragment.PagerGridFragment;
+import com.hf.fragment.PagedGridFragment;
 import com.hf.view.PagedGridView;
 
 public class MainActivity extends AppCompatActivity {
@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        PagerGridFragment fragment = new PagerGridFragment();
+        PagedGridFragment fragment = new PagedGridFragment();
         fragment.setAdapter(mAdapter);
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();

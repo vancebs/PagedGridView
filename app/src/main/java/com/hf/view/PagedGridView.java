@@ -18,11 +18,10 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ListAdapter;
 
-import com.hf.pagerlistview.R;
-
 import java.security.InvalidParameterException;
 
 /**
+ * Paged Grid View
  * Created by Fan on 2016/2/25.
  */
 public class PagedGridView extends ViewPager {
@@ -56,11 +55,11 @@ public class PagedGridView extends ViewPager {
 
         initObjectId();
     }
-
     public synchronized void initObjectId() {
         mObjectId = sObjectCount;
         sObjectCount ++;
     }
+
 
     private void setViewPagerAdapter(FragmentManager fm) {
         mPagerAdapter = new LocalFragmentPagerAdapter(fm);
