@@ -1,6 +1,5 @@
 package com.hf.pagerlistview;
 
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -9,7 +8,6 @@ import android.widget.BaseAdapter;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
-import com.hf.fragment.PagedGridFragment;
 import com.hf.view.PagedGridView;
 
 public class MainActivity extends AppCompatActivity {
@@ -47,13 +45,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        PagedGridFragment fragment = new PagedGridFragment();
-        fragment.setAdapter(mAdapter);
-
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.add(R.id.container, fragment);
-        ft.commit();
 
         // init PagedGridView
         PagedGridView pgv = (PagedGridView) findViewById(R.id.pagedgridview);
