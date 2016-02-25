@@ -1,5 +1,6 @@
-package com.hf.fragment;
+package com.hf.view;
 
+import android.content.Context;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,10 +23,9 @@ import com.hf.pagerlistview.R;
 import java.security.InvalidParameterException;
 
 /**
- * Pager Grid Fragment
- * Created by Fan on 2016/2/24.
+ * Created by Fan on 2016/2/25.
  */
-public class PagerGridFragment extends Fragment {
+public class PagedGridView extends ViewPager {
     private static final int DEFAULT_MAX_COLUMN = 4;
     private static final int DEFAULT_MAX_ROW = 2;
 
@@ -46,8 +47,12 @@ public class PagerGridFragment extends Fragment {
         }
     };
 
-    public PagerGridFragment() {
-        super();
+    public PagedGridView(Context context) {
+        this(context, null);
+    }
+
+    public PagedGridView(Context context, AttributeSet attrs) {
+        super(context, attrs);
 
         initObjectId();
     }
@@ -57,41 +62,55 @@ public class PagerGridFragment extends Fragment {
         sObjectCount ++;
     }
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mPagerAdapter = new LocalFragmentPagerAdapter(getFragmentManager());
+    private void setViewPagerAdapter(FragmentManager fm) {
+        mPagerAdapter = new LocalFragmentPagerAdapter(fm);
 
-        ViewPager mViewPager = new ViewPager(getContext());
-        mViewPager.setId(android.R.id.primary);
-        mViewPager.setAdapter(mPagerAdapter);
-        return mViewPager;
-    }
-
-    @Override
-    public void onDestroy() {
-        ListAdapter adapter = getAdapter();
-        if (adapter != null) {
-            adapter.unregisterDataSetObserver(mDataSetObserver);
-            mAdapterList.remove(mObjectId);
+        if (getId() == View.NO_ID) {
+            setId(android.R.id.primary);
         }
-        super.onDestroy();
+        super.setAdapter(mPagerAdapter);
     }
 
-    public void setAdapter(ListAdapter adapter) {
+    /**
+     * Do not use this method use {@link #setAdapter(FragmentManager, ListAdapter)} instead
+     * @param adapter adapter
+     */
+    @Override
+    public void setAdapter(PagerAdapter adapter) {
+        throw new InvalidParameterException("This method is not supported");
+    }
+
+    /**
+     * Do not use this method use {@link #getListAdapter()} instead
+     * @return adapter
+     */
+    @Override
+    public PagerAdapter getAdapter() {
+        throw new InvalidParameterException("This method is not supported");
+    }
+
+    public void setAdapter(FragmentManager fm, ListAdapter adapter) {
+        ListAdapter lastListAdapter = getListAdapter();
+        if (lastListAdapter != null) {
+            lastListAdapter.unregisterDataSetObserver(mDataSetObserver);
+        }
+
+        // register observer & save adapter
         adapter.registerDataSetObserver(mDataSetObserver);
         mAdapterList.put(mObjectId, adapter);
 
         if (mPagerAdapter != null) {
             mPagerAdapter.notifyDataSetChanged();
         }
+
+        setViewPagerAdapter(fm);
     }
 
-    public ListAdapter getAdapter() {
-        return mAdapterList.get(mObjectId);
+    public ListAdapter getListAdapter() {
+        return getListAdapter(mObjectId);
     }
 
-    public static ListAdapter getAdapter(int id) {
+    public static ListAdapter getListAdapter(int id) {
         return mAdapterList.get(id);
     }
 
@@ -112,7 +131,7 @@ public class PagerGridFragment extends Fragment {
 
         @Override
         public int getCount() {
-            return (getAdapter().getCount() - 1) / DEFAULT_MAX_COLUMN / DEFAULT_MAX_ROW  + 1;
+            return (getListAdapter().getCount() - 1) / DEFAULT_MAX_COLUMN / DEFAULT_MAX_ROW  + 1;
         }
     }
 
@@ -134,7 +153,7 @@ public class PagerGridFragment extends Fragment {
             mGridView = new GridView(getContext());
             mGridView.setNumColumns(maxColumn);
             mGridView.setAdapter(new SubListAdapter(
-                    PagerGridFragment.getAdapter(getArgParentId()),
+                    PagedGridView.getListAdapter(getArgParentId()),
                     position * maxItemCount,
                     maxItemCount));
 
